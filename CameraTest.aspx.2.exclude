@@ -1,0 +1,835 @@
+﻿
+<%@ Page Title="" Language="C#" MasterPageFile="~/TabStagging.Master" AutoEventWireup="true"
+    CodeFile="CameraTest.aspx.cs" Inherits="CameraTest" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <script type="text/javascript">
+        
+    </script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <%--<div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                    <ul class="breadcrumb">
+                            <a class="brand" href="#"><small><i class="icon-leaf"></i>MT Educare Ltd.</small>
+                            </a>
+                        </ul>
+                           <div id="nav-search">
+                                <a class="brand" href="#"><small>Order Engine</small>
+                                </a>
+                            </div>
+                        
+               
+                <!--/.ace-nav-->
+            </div>
+            <!--/.container-fluid-->
+        </div>
+        <!--/.navbar-inner-->
+    </div>--%>
+    <!--/.navbar--><%--
+    <div class="container-fluid" id="main-container">     
+        <div id="main-content" >--%>
+            
+            <!--#breadcrumbs-->
+           <%-- <div id="page-content" class="clearfix">--%>
+                <!--<div class="page-header position-relative">
+                    <h1>
+                        Form Wizard <small><i class="icon-double-angle-right"></i>and Validation</small></h1>
+                </div>-->
+                <!--/page-header-->
+                    <!-- PAGE CONTENT BEGINS HERE -->
+                    <div class="row-fluid" id="divAddStudDetail" runat="server">
+                        <asp:UpdatePanel ID="UpdatePanelMsgBox" runat="server" UpdateMode="Conditional">
+                                <ContentTemplate>
+                                    <div class="alert alert-block alert-success" id="Msg_Success" visible="false" runat="server">
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <i class="icon-remove"></i>
+                                        </button>
+                                        <p>
+                                            <strong><i class="icon-ok"></i></strong>
+                                            <asp:Label ID="lblSuccess" runat="server" Text="Label"></asp:Label>
+                                        </p>
+                                    </div>
+                                    <div class="alert alert-error" id="Msg_Error" visible="false" runat="server">
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <i class="icon-remove"></i>
+                                        </button>
+                                        <p>
+                                            <strong><i class="icon-remove"></i>Error!</strong>
+                                            <asp:Label ID="lblerror" runat="server" Text="Label"></asp:Label>
+                                        </p>
+                                    </div>
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                        <div class="row-fluid">
+                            <div class="span12 infobox-container">
+                                <div class="infobox infobox-green">                               
+                                    <div class="infobox-data">                                    
+                                        <span class="infobox-content">
+                                            <asp:Label runat="server" ID="Label9">Division</asp:Label> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <asp:Label runat="server" ID="lblDivision_Result" Text="MUM-STB-ENG" CssClass="blue" />
+                                            <asp:Label runat="server" ID="lblDivisionCode" Text="A0" visible="false" />
+
+                                        </span>
+                                    </div>
+                                
+                                </div>
+                                <div class="infobox infobox-blue">                                
+                                    <div class="infobox-data">                                    
+                                        <span class="infobox-content">
+                                            <asp:Label runat="server" ID="Label12">Center</asp:Label> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <asp:Label runat="server" ID="lblCenter_Result" Text="Andheri-West" CssClass="blue" />
+                                            <asp:Label runat="server" ID="lblCenterCode" Text="A007" visible="false" />
+                                        </span>
+                                    </div>
+                                
+                                </div>
+                                <div class="infobox infobox-orange">                                
+                                    <div class="infobox-data">                 
+                                        <span class="infobox-content">
+                                            <asp:Label runat="server" ID="Label1">Academic Year</asp:Label> &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <asp:Label runat="server" ID="lblAcadYear_Result" Text="2015-2016" CssClass="blue" />
+                                            <asp:Label runat="server" ID="lblAcdYear" Text="2015-2016" visible="false" />
+                                        </span>
+                                    </div>
+                                
+                                </div>
+                            
+                                </div>
+                            </div>
+                    <%--   <table cellpadding="3" class="table table-striped table-bordered table-condensed">
+                            <tr>
+                                <td class="span4" style="text-align: left">
+                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                        <tr>
+                                            <td style="border-style: none; text-align: left; width: 40%;">
+                                        
+                                                
+                                            </td>
+                                            <td style="border-style: none; text-align: left; width: 60%;">
+                                        
+                                                
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="span4" style="text-align: left">
+                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                        <tr>
+                                            <td style="border-style: none; text-align: left; width: 40%;">
+                                        
+                                            </td>
+                                            <td style="border-style: none; text-align: left; width: 60%;">                                        
+                                                
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                                <td class="span4" style="text-align: left">
+                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                        <tr>
+                                            <td style="border-style: none; text-align: left; width: 40%;">
+                                        
+                                                
+                                            </td>
+                                            <td style="border-style: none; text-align: left; width: 60%;">                                        
+                                                
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                           
+                        </table>
+                       --%>
+                       <div id="divAdddNewStud" runat="server">
+                       <div class="widget-header widget-header-small header-color-dark">
+                            <h5 class="modal-title">
+                                Search By Mobile Number
+                            </h5>
+                            <asp:Label runat="server" ID="lblConfigInfo" Visible="false"></asp:Label>
+                            <asp:Label runat="server" ID="lblUserId" Visible="false"></asp:Label>
+                        </div>
+                        <div class="row-fluid">
+                            <div class="row-fluid">
+                                
+                             <table cellpadding="3" class="table table-striped table-bordered table-condensed">
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>
+                                                <td style="border-style: none; text-align: left; width: 20%;">    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                    <asp:Label runat="server" ID="Label2">Mobile No</asp:Label>
+                                                    <asp:Label runat="server" ID="Label10" CssClass="red">*</asp:Label>
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 30%;">
+                                                    <div class="input-append">
+                                                                <asp:TextBox runat="server" ID="txtMobileNo" ToolTip="Mobile No" 
+                                                                            Width="240px" MaxLength="12" type="number"/> 
+                                                                  <asp:LinkButton ID="lnkSearchInfo" ToolTip="Search" 
+                                                                         runat="server" Height="20px"   class="btn btn-purple icon-search" 
+                                                                        CommandName="SearchInfo" onclick="lnkSearchInfo_Click" ValidationGroup="UcValidate" >    
+                                                                        <%--<i class="icon-search"></i>--%>
+                                                                       
+
+                                                                        </asp:LinkButton>
+                                                                        
+                                                      </div>                                                            
+                                                            
+                                                </td>                                               
+                                                <td style="border-style: none; text-align: left; width: 20%;">
+                                                    <%--<table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                        <tr>
+                                                             <td style="border-style: none; text-align: left; width: 100%;">--%>
+                                                             <%--
+                                                                <asp:RegularExpressionValidator ID="redquiredexpression5" ControlToValidate="txtMobileNo"
+                                                                    Text="" runat="server" ValidationGroup="UcValidate" CssClass="red" SetFocusOnError="true" ErrorMessage="Invalid Mobile Number." 
+                                                                    ValidationExpression="^\d+$"></asp:RegularExpressionValidator>   --%>
+                                                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator18" runat="server"
+                                                                        ControlToValidate="txtMobileNo" CssClass="red" ErrorMessage="Invalid Mobile Number"
+                                                                        ValidationGroup="UcValidate" Text="" SetFocusOnError="true" ValidationExpression="^[0-9]{10,12}$" />                                                         
+                                                                  
+                                                            <%--</td>
+                                                        </tr>
+                                                        <tr>
+                                                             <td style="border-style: none; text-align: left; width: 100%;">--%>
+                                                                    <%--<asp:RegularExpressionValidator ID="RegularExpressionValidator18" runat="server"
+                                                                        ControlToValidate="txtMobileNo" CssClass="red" ErrorMessage="Mobile Number length must be between 10 to 12 characters"
+                                                                        ValidationGroup="UcValidate" Text="" SetFocusOnError="true" ValidationExpression="^[0-9]{10,12}$" />--%>
+                                                            <%-- </td>
+                                                        </tr>
+                                                    </table>--%>
+                                                        
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>                       
+                                               
+                                </tr>                                 
+                             </table>
+                                
+                                
+                                <div id="divStudInfo" runat="server" class="row-fluid" visible="false">
+                              <asp:UpdatePanel ID="upnlsearch" runat="server">
+                                        <ContentTemplate>
+                                            <div class="span10">
+                                            <table cellpadding="1" class="table table-striped table-bordered table-condensed">
+                                                <tr>                                      
+                                                    <td style="text-align: left">
+                                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                             <tr>                                        
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label3">Student Name</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 50%;">                 
+                                                   
+                                                                                <asp:Label runat="server" ID="lblStudName">Student Name</asp:Label>                                                  
+                                                                            </td>
+                                                                            <%--<td style="border-style: none; text-align: left; width: 20%;">
+                                                                            </td>--%>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                            
+                                                            </tr> 
+                                                            <tr>
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label6">Email Id</asp:Label>
+                                                                                <asp:Label runat="server" ID="Label19" CssClass="red">*</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                         
+                                                   
+                                                                                <asp:TextBox runat="server" ID="txtEmailId" ToolTip="Email Id" type="text"
+                                                                                            Width="265px"/> 
+                                                    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">
+                                                                                <asp:RegularExpressionValidator ID="EmailIDValidation" runat="server" ControlToValidate="txtEmailId"
+                                                                                        ErrorMessage="Invalid Email Id" CssClass="red" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                                                                        ValidationGroup="UcValidate" SetFocusOnError="True" Text=""></asp:RegularExpressionValidator>                         
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                  
+                                                            </tr>     
+                                                            <tr>                                      
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label11">Parent Mobile No</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                         
+                                                   
+                                                                                <asp:TextBox runat="server" ID="txtParentMobileNo" MaxLength="12" ToolTip="Parent Mobile No" type="number"
+                                                                                            Width="265px" ValidationGroup="UcValidate" />
+                                                    
+                                                    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">                                                     
+                                                                                <%--<asp:RegularExpressionValidator ID="RegularExpressionValidator1" ControlToValidate="txtParentMobileNo"
+                                                                                        Text="" runat="server" ValidationGroup="UcValidate" CssClass="red" SetFocusOnError="true" ErrorMessage="Invalid Mobile Number."
+                                                                                        ValidationExpression="^\d+$"></asp:RegularExpressionValidator> --%>   
+                                                                                <asp:RegularExpressionValidator ID="RegularExpressionValidator4" runat="server"
+                                                                                        ControlToValidate="txtParentMobileNo" CssClass="red" ErrorMessage="Invalid Mobile Number"
+                                                                                        ValidationGroup="UcValidate" Text="" SetFocusOnError="true" ValidationExpression="^[0-9]{10,12}$" />                   
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                    
+                                                            </tr>     
+                                                            <tr>                                      
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label17">School/College Name</asp:Label>
+                                                                                <asp:Label runat="server" ID="Label18" CssClass="red">*</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                         
+                                                   
+                                                                                <asp:TextBox runat="server" ID="txtInstitute" MaxLength="12" ToolTip="Institute Name" type="text"
+                                                                                            Width="265px"  />
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">                                                    
+                                                                               <%-- <asp:RegularExpressionValidator ID="RegularExpressionValidator5" runat="server"
+                                                                                        ControlToValidate="txtInstitute" CssClass="red" ErrorMessage="Please Input Alphabets" ValidationGroup="UcValidate"
+                                                                                        Text="" SetFocusOnError="true" ValidationExpression="^[a-zA-Z]+[ a-zA-Z-_'.]*$" />--%>
+                                                                                        
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                    
+                                                            </tr>     
+                                                            <tr>
+                                       
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label7">Current Standard</asp:Label>
+                                                                                <asp:Label runat="server" ID="Label14" CssClass="red">*</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                         
+                                                                               <asp:DropDownList runat="server" ID="ddlStandard" style="width: 280px;" ToolTip="Standard"
+                                                                                            data-placeholder="Select Standard" CssClass="chzn-select" >                                                                 
+                                                                                </asp:DropDownList>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">   
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>
+                                   
+                                                            </tr>                                      
+                                                            <tr>                                   
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label8">Product Interested In</asp:Label>
+                                                                                <asp:Label runat="server" ID="Label15" CssClass="red">*</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                         
+                                                                               <asp:DropDownList runat="server" ID="ddlProductName" Width="280px" ToolTip="Product"
+                                                                                            data-placeholder="Select Product" CssClass="chzn-select">
+                                                                                            <asp:ListItem>Select</asp:ListItem>                                                       
+                                                                                </asp:DropDownList>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">  
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>                                         
+                                                            </tr>   
+                                                            <tr>                                   
+                                                                 <td class="span12" style="text-align: left">
+                                                                    <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                                                        <tr>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">    
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                                        
+                                                                                <asp:Label runat="server" ID="Label20"> Accept Terms & Condition</asp:Label>
+                                                                                <asp:Label runat="server" ID="Label21" CssClass="red">*</asp:Label>
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 30%;">                         
+                                                                                <asp:CheckBox ID="chkCheck" runat="server" OnCheckedChanged="chkCheck_CheckedChanged"
+                                                                                                AutoPostBack="true" Checked="false" />
+                                                                                            <span class="lbl"></span>  
+                                                                            </td>
+                                                                            <td style="border-style: none; text-align: left; width: 20%;">  
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </td>                                         
+                                                            </tr>   
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                            </div>
+                                            <div class="span2">
+                                            <asp:ImageButton runat="server" ID="imgPic" Width="64px" Height="64px" 
+                                                                                    onclick="imgPic_Click"/>
+                                                           <%-- <input type="file" accept="image/*;capture=camera" />--%>
+                                            </div>
+                                            
+                                        </ContentTemplate>
+                                        <Triggers>                                            
+                                            <%--imgPic--%>
+                                            <asp:PostBackTrigger ControlID="chkCheck" />
+                                            <asp:PostBackTrigger ControlID="imgPic" />
+                                        </Triggers>
+                                    </asp:UpdatePanel>
+                                    <div id="DivPhoto" runat="server" class="tab-pane">
+                                                <div class="widget-box">
+                                                    <div class="widget-header widget-header-small header-color-dark">
+                                                        <h5>
+                                                            Student Image
+                                                        </h5>
+                                                    </div>
+                                                    <div class="widget-body">
+                                                        <table width="100%" cellpadding="4" cellspacing="0">
+                                                            <tr>
+                                                                <td width="30%" valign="top">
+                                                                    &nbsp;&nbsp;&nbsp;&nbsp;Current Image
+                                                                    <br />
+                                                                    <center>
+                                                                        <asp:Image runat="server" ID="Img" Width="260px" Height="200px" /></center>
+                                                                </td>
+                                                                <td width="70%" valign="top">
+                                                                    <div class="row-fluid" style="padding: 4; margin: 2;">
+                                                                        <asp:UpdatePanel ID="UpdatePanelGrpnm" runat="server" UpdateMode="always">
+                                                                            <ContentTemplate>
+                                                                                <div class="tabbable row-fluid " style="vertical-align: top;">
+                                                                                    <ul class="nav nav-tabs" id="myTab">
+                                                                                        <li id="liBasicdata" runat="server" class="active"><a data-toggle="tab" runat="server"
+                                                                                            id="s" href="#WebCam"><i class="green icon-camera bigger-110"></i>Capture Photo</a></li>
+                                                                                        <li id="liPrimerycontact" runat="server"><a data-toggle="tab" runat="server" id="fd"
+                                                                                            href="#LinkImg"><i class="green  icon-cloud-upload bigger-110"></i>Link Photo </a>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                    <div class="tab-content" style="vertical-align: top; overflow:hidden">
+                                                                                        <div id="WebCam" class="tab-pane in active" style="vertical-align: top;">
+                                                                                            <asp:UpdatePanel ID="UpdatePanelTab1" runat="server" UpdateMode="Conditional">
+                                                                                                <ContentTemplate>
+                                                                                                    <table width="100%" height="180px" cellpadding="2">
+                                                                                                        <tr>
+                                                                                                            <td width="20%" valign="top" style="width: 100%">
+                                                                                                                <object height="190px" width="405px">
+                                                                                                                    <param name="movie" value="WebcamResources/save_picture.swf">
+                                                                                                                        <embed height="190px" src="WebcamResources/save_picture.swf" width="300px"></embed>
+                                                                                                                    </param>
+                                                                                                                </object>
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    </table>
+                                                                                                </ContentTemplate>
+                                                                                            </asp:UpdatePanel>
+                                                                                        </div>
+                                                                                        <div id="LinkImg" class="tab-pane">
+                                                                                            <asp:UpdatePanel ID="UpdatePanelTab2" runat="server" UpdateMode="Conditional">
+                                                                                                <ContentTemplate>
+                                                                                                    <table width="100%" style="" cellpadding="2">
+                                                                                                        <tr>
+                                                                                                            <td width="20%" valign="top">
+                                                                                                                <asp:Button ID="btnUploadfile" runat="server" class="btn btn-app btn-success btn-mini radius-4"
+                                                                                                                    Text="Start" Visible="true" Width="75px" onclick="btnUploadfile_Click" />
+                                                                                                                <br />
+                                                                                                            </td>
+                                                                                                            <td width="80%">
+                                                                                                                <asp:FileUpload runat="server" ID="FileUpload1" />
+                                                                                                            </td>
+                                                                                                        </tr>
+                                                                                                    </table>
+                                                                                                </ContentTemplate>
+                                                                                                <Triggers>
+                                                                                                        <asp:PostBackTrigger ControlID="btnUploadfile" />
+                                                                                                </Triggers>
+                                                                                            </asp:UpdatePanel>
+                                                                                            <p>
+                                                                                            </p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </ContentTemplate>
+                                                                        </asp:UpdatePanel>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="2">
+                                                                    <div class="modal-footer">
+                                                                        <center>
+                                                                            <asp:Button class="btn btn-app btn-mini btn-primary radius-4" Width="75px" ID="btnImageCloseModel"
+                                                                                runat="server" Text="Close" onclick="btnImageCloseModel_Click" />
+                                                                        </center>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                              </div>
+                              
+                             </div>
+                              
+                              <div class="row-fluid" style="text-align: center;">
+                                    
+                                    <asp:Button class="btn btn-app btn-success btn-mini radius-4" ID="BtnSave" runat="server"
+                                        Text="Submit" ValidationGroup="UcValidate" onclick="BtnSave_Click" Visible="false"/>                                   
+                                    <asp:Button class="btn btn-app btn-primary btn-mini radius-4" ID="BtnClose" Visible="true"
+                                        runat="server" Text="Close" onclick="BtnClose_Click"/>
+                                    <asp:ValidationSummary ID="ValidationSummary1" ShowSummary="false" DisplayMode="List"
+                                        ShowMessageBox="true" ValidationGroup="UcValidate" runat="server" />                                        
+                              </div>
+                        </div>
+                        
+                        </div>
+                        <div id="divApplyTermsCond" runat="server" visible="false">
+                       <div class="widget-header widget-header-small header-color-dark">
+                            <%--<h5 class="modal-title">                                
+                            </h5>--%>
+                            <table cellpadding="3">
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <asp:Label runat="server" ID="Label22" Font-Bold="True">RULES AND REGULATIONS</asp:Label>
+                                        <asp:Label runat="server" ID="Label23" Visible="false"></asp:Label>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="row-fluid">
+                             <table cellpadding="3" class="table table-striped table-bordered table-condensed">
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label24">                           
+                                                        1.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label25">                           
+                                                        Allotment of batch and session is solely at the discretion of the institution.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr> 
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label26">                           
+                                                        2.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label27">                           
+                                                        Attendance in all lectures and examinations is essential for enhancing performance.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>                                 
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label28">                           
+                                                        3.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label29">                           
+                                                        Students are discouraged from being absent from any class unless in absolutely unavoidable circumstances. Permission for
+                                                        absenteeism will be given only for genuine resons. Every absence must be followed by parents or guardians phone call on the 
+                                                        same day, followed by a note sent with the student.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>  
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label30">                           
+                                                        4.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label31">                           
+                                                        Any damage to the institutes property will have to be compensated by the student responsible for the damage.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label32">                           
+                                                        5.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label33">                           
+                                                        The Management reserves the sole discretion of taking any dicision / action felt necessary against a student to keep the decorum and morale of the institute.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label34">                           
+                                                        6.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%; font-weight: bold;">                                        
+                                                    <asp:Label runat="server" ID="Label35">                           
+                                                        The Management has the right to change batch timings, sub-divide batches or increase or decrease the number of lectures per week.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label36">                           
+                                                        7.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label37">                           
+                                                        Students are strictly prohibited from carrying cell phones to the class. The institute will not be responsible for loss of cell phones in the class premises.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label38">                           
+                                                        8.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label39" Font-Bold="True">                           
+                                                        Fees once paid will neither be refunded nor transferred:
+                                                    </asp:Label>                                                    
+                                                    <asp:Label runat="server" ID="Label40">
+                                                        Fees paid for one subject / term cannot be adjusted for another subject /term or subsequent year. Fees are not transferable to any other student or course.
+                                                    </asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label41">                           
+                                                        9.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label42" Font-Bold="True">                           
+                                                        Fees will not be refunded if the students or parents change residence. In such cases, the student shall be accommodated in the centre which is near to the changed(New) residence.
+                                                    </asp:Label>  
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label43">                           
+                                                        10.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                        
+                                                    <asp:Label runat="server" ID="Label44">                           
+                                                        Once Admission is granted, a change of batch or branch will not be allowed except under extremely special circumstances.
+                                                    </asp:Label>  
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label45">                           
+                                                        11.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">
+                                                    A                                        
+                                                    <asp:Label runat="server" ID="Label46" Font-Bold="True">                           
+                                                        penalty of Rs.200/-
+                                                    </asp:Label>
+                                                    will be charged in cases of a dishonoured cheque.  
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label47">                           
+                                                        12.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                                                                           
+                                                    <asp:Label runat="server" ID="Label48">                           
+                                                        Photograph(s) of the students may be used in MT Educare's publicity material.
+                                                    </asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                                <tr>                                      
+                                    <td class="span12" style="text-align: left">
+                                        <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                            <tr>                                               
+                                                <td style="border-style: none; text-align: Right; width: 10%;">                                        
+                                                    <asp:Label runat="server" ID="Label49">                           
+                                                        13.
+                                                    </asp:Label>                                                    
+                                                </td>
+                                                <td style="border-style: none; text-align: left; width: 90%;">                                                                                           
+                                                    <asp:Label runat="server" ID="Label50">                           
+                                                        Students / Parens will receive emails/sms on latest Offers / News /Information.
+                                                    </asp:Label>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>      
+                                </tr>
+                             </table>
+                              <div class="row-fluid" style="text-align: center;">
+                                    
+                                    <asp:Button class="btn btn-app btn-success btn-mini radius-4" 
+                                        ID="btnApplyTermsCond" runat="server"
+                                        Text="OK" onclick="btnApplyTermsCond_Click" />                                  
+                                    
+                              </div>
+                        </div>
+                        
+                        </div>
+
+
+                    </div>
+
+                    
+                    <div class="row-fluid" id="divSaveMessage" runat="server" visible="false">
+                        <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+                                <ContentTemplate>
+                                    <div class="alert alert-block alert-success" id="Div1"  runat="server">
+                                        <button type="button" class="close" data-dismiss="alert">
+                                            <i class="icon-remove"></i>
+                                        </button>
+                                        <p>
+                                            <strong><i class="icon-ok"></i></strong>
+                                            <asp:Label ID="Label16" runat="server" Text="Thank You for the Enquiry....!"></asp:Label>
+                                            <asp:Button class="btn btn-app btn-success btn-mini radius-4" ID="btnOk" runat="server"
+                                                    Text="OK"  onclick="btnOk_Click" />
+                                        </p>
+                                    </div>                                    
+                                </ContentTemplate>
+                            </asp:UpdatePanel>
+                    </div>
+                    <!-- PAGE CONTENT ENDS HERE -->
+               
+                <!--/row-->
+            <%--</div>--%>
+    <!--/#page-content-->
+    <!--<div id="ace-settings-container">
+                <div class="btn btn-app btn-mini btn-warning" id="ace-settings-btn">
+                    <i class="icon-cog"></i>
+                </div>
+                <div id="ace-settings-box">
+                    <div>
+                        <div class="pull-left">
+                            <select id="skin-colorpicker" class="hidden">
+                                <option data-class="default" value="#438EB9">#438EB9</option>
+                                <option data-class="skin-1" value="#222A2D">#222A2D</option>
+                                <option data-class="skin-2" value="#C6487E">#C6487E</option>
+                                <option data-class="skin-3" value="#D0D0D0">#D0D0D0</option>
+                            </select>
+                        </div>
+                        <span>&nbsp; Choose Skin</span>
+                    </div>
+                    <div>
+                        <input type="checkbox" class="ace-checkbox-2" id="ace-settings-header" /><label class="lbl"
+                            for="ace-settings-header">
+                            Fixed Header</label></div>
+                    <div>
+                        <input type="checkbox" class="ace-checkbox-2" id="ace-settings-sidebar" /><label
+                            class="lbl" for="ace-settings-sidebar">
+                            Fixed Sidebar</label></div>
+                </div>
+            </div>-->
+    <!--/#ace-settings-container-->
+    </asp:Content>

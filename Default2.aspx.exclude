@@ -1,0 +1,149 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="Default2.aspx.cs" Inherits="Default2" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <script type="text/javascript" charset="utf-8" src="assets/js/phonegap-1.0.0.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value 
+
+    // Wait for PhoneGap to connect with the device
+    //
+    document.addEventListener("deviceready",onDeviceReady,false);
+
+    // PhoneGap is ready to be used!
+    //
+    function onDeviceReady() {
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoDataSuccess(imageData) {
+      // Uncomment to view the base64 encoded image data
+      // console.log(imageData);
+
+      // Get image handle
+      //
+      var smallImage = document.getElementById('smallImage');
+
+      // Unhide image elements
+      //
+      smallImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
+      smallImage.src = "data:image/jpeg;base64," + imageData;
+    }
+
+    // Called when a photo is successfully retrieved
+    //
+    function onPhotoURISuccess(imageURI) {
+      // Uncomment to view the image file URI 
+      // console.log(imageURI);
+
+      // Get image handle
+      //
+      var largeImage = document.getElementById('largeImage');
+
+      // Unhide image elements
+      //
+      largeImage.style.display = 'block';
+
+      // Show the captured photo
+      // The inline CSS rules are used to resize the image
+      //
+      largeImage.src = imageURI;
+    }
+
+    // A button will call this function
+    //
+    function capturePhoto() {
+      // Take picture using device camera and retrieve image as base64-encoded string
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50 });
+    }
+
+    // A button will call this function
+    //
+    function capturePhotoEdit() {
+      // Take picture using device camera, allow edit, and retrieve image as base64-encoded string  
+      navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true }); 
+    }
+
+    // A button will call this function
+    //
+    function getPhoto(source) {
+      // Retrieve image file location from specified source
+      navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50, 
+        destinationType: destinationType.FILE_URI,
+        sourceType: source });
+    }
+
+    // Called if something bad happens.
+    // 
+    function onFail(message) {
+      alert('Failed because: ' + message);
+  }
+
+  function (imageData) {
+      // Do something with the image
+  }
+
+  // Show image
+  //
+  function cameraCallback(imageData) {
+      var image = document.getElementById('myImage');
+      image.src = "data:image/jpeg;base64," + imageData;
+  }
+
+  function (message) {
+      // Show a helpful message
+  }
+
+  { quality : 75, 
+  destinationType : Camera.DestinationType.DATA_URL, 
+  sourceType : Camera.PictureSourceType.CAMERA, 
+  allowEdit : true,
+  encodingType: Camera.EncodingType.JPEG,
+  targetWidth: 100,
+    targetHeight: 100 };
+
+  Camera.DestinationType = {
+      DATA_URL: 0,                // Return image as base64 encoded string
+      FILE_URI: 1                 // Return image file URI
+  };
+
+  Camera.PictureSourceType = {
+      PHOTOLIBRARY: 0,
+      CAMERA: 1,
+      SAVEDPHOTOALBUM: 2
+  };
+
+  Camera.EncodingType = {
+      JPEG: 0,               // Return JPEG encoded image
+      PNG: 1                 // Return PNG encoded image
+  };
+
+   </script>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+           <button onclick="capturePhoto();">Capture Photo</button> 
+   <button onclick="capturePhotoEdit();">Capture Editable Photo</button> 
+    <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button>
+    <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button>
+        <asp:Button ID="btnBack" runat="server" Text="Back" onclick="btnBack_Click" />
+        <asp:Button ID="Button1" runat="server" Text="Test" onclick="Button1_Click"  />
+    <img style="display:none;width:60px;height:60px;" id="smallImage" src="" />
+    <img style="display:none;" id="largeImage" src="" />
+    </div>
+    </form>
+</body>
+</html>

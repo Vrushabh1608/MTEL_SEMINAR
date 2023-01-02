@@ -1,0 +1,132 @@
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/TabStagging.Master" AutoEventWireup="true"
+    CodeFile="Configuration.aspx.cs" Inherits="Configuration" %>
+
+<asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
+    <script type="text/javascript">
+        function openModalDelete() {
+            $('#DivDelete').modal({
+                backdrop: 'static'
+            })
+
+            $('#DivDelete').modal('show');
+        };
+
+
+
+    </script>
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+    <!-- PAGE CONTENT BEGINS HERE -->
+    <div class="row-fluid">
+        <asp:UpdatePanel ID="UpdatePanelMsgBox" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <div class="alert alert-block alert-success" id="Msg_Success" visible="false" runat="server">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <p>
+                        <strong><i class="icon-ok"></i></strong>
+                        <asp:Label ID="lblSuccess" runat="server" Text="Label"></asp:Label>
+                    </p>
+                </div>
+                <div class="alert alert-error" id="Msg_Error" visible="false" runat="server">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <i class="icon-remove"></i>
+                    </button>
+                    <p>
+                        <strong><i class="icon-remove"></i>Error!</strong>
+                        <asp:Label ID="lblerror" runat="server" Text="Label"></asp:Label>
+                    </p>
+                </div>
+            </ContentTemplate>
+        </asp:UpdatePanel>
+        <asp:UpdatePanel ID="UpdatePanel1" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <table cellpadding="3" class="table table-striped table-bordered table-condensed">
+                    <tr>
+                        <td class="span12" style="text-align: left">
+                            <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                <tr>
+                                    <td style="border-style: none; text-align: left; width: 20%;">
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 30%;">
+                                        <asp:Label runat="server" ID="Label2">User ID</asp:Label>
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 50%;">
+                                        <asp:TextBox runat="server" ID="txtUserId" ToolTip="User ID" type="number" Width="205px" AutoPostBack="True"
+                                            ValidationGroup="UcValidate" OnTextChanged="txtUserId_TextChanged" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="span12" style="text-align: left">
+                            <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                <tr>
+                                    <td style="border-style: none; text-align: left; width: 20%;">
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 30%;">
+                                        <asp:Label runat="server" ID="Label3">Division</asp:Label>
+                                        <asp:Label runat="server" ID="lblPage" Visible="false"></asp:Label>
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 50%;">
+                                        <asp:DropDownList runat="server" ID="ddldivision" Width="215px" ToolTip="Division"
+                                            data-placeholder="Select Division" CssClass="chzn-select" AutoPostBack="True"
+                                            OnSelectedIndexChanged="ddldivision_SelectedIndexChanged" />
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="span12" style="text-align: left">
+                            <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                <tr>
+                                    <td style="border-style: none; text-align: left; width: 20%;">
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 30%;">
+                                        <asp:Label runat="server" ID="Label5">Academic Year</asp:Label>
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 50%;">
+                                        <asp:DropDownList runat="server" ID="ddlAcdYear" ToolTip="Academic Year" data-placeholder="Select"
+                                            Width="215px" CssClass="chzn-select">
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="span12" style="text-align: left">
+                            <table cellpadding="0" style="border-style: none;" class="table-hover" width="100%">
+                                <tr>
+                                    <td style="border-style: none; text-align: left; width: 20%;">
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 30%;">
+                                        <asp:Label runat="server" ID="Label6">Center</asp:Label>
+                                    </td>
+                                    <td style="border-style: none; text-align: left; width: 50%;">
+                                        <asp:DropDownList runat="server" ID="ddlCenter" ToolTip="Center" data-placeholder="Select"
+                                            Width="215px" CssClass="chzn-select">
+                                        </asp:DropDownList>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </ContentTemplate>           
+        </asp:UpdatePanel>
+        <div class="row-fluid" style="text-align: center;">
+            <asp:Button class="btn btn-app btn-success btn-mini radius-4" ID="BtnSave" runat="server"
+                Text="Save" ValidationGroup="UcValidate" OnClick="BtnSave_Click" />
+            <asp:Button class="btn btn-app btn-primary btn-mini radius-4" ID="BtnClose" Visible="true"
+                runat="server" Text="Close" OnClick="BtnClose_Click" />
+            <asp:ValidationSummary ID="ValidationSummary1" ShowSummary="false" DisplayMode="List"
+                ShowMessageBox="true" ValidationGroup="UcValidate" runat="server" />
+        </div>
+    </div>
+    <!-- PAGE CONTENT ENDS HERE -->
+    <!--/row-->
+</asp:Content>

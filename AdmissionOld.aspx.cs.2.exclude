@@ -1,0 +1,829 @@
+﻿using Microsoft.VisualBasic;
+using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using ShoppingCart.BL;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+
+public partial class AdmissionOld : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack)
+            {
+                FillConfigInfo();
+                FillDDL_Standard();
+                FillDDL_Product();
+                BindPayplan();
+            }
+            //else
+            //{
+            //    try
+            //    {
+            //       string ss = Request.Files[0].FileName;
+
+            //        Request.Files[0].SaveAs(Server.MapPath("~/styles/" + ss));
+            //        ss2 = ss;
+            //        preview.ImageUrl = Server.MapPath("~/styles/" + ss);
+            //    }
+            //    catch
+            //    {
+            //    }
+            //}
+        }
+        catch (Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+    }
+    #region Events
+
+
+    protected void btnSavePhoto_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string ss = Request.Files[0].FileName;
+
+            Request.Files[0].SaveAs(Server.MapPath("~/Images/TestPhoto/" + ss));
+            //ss2 = ss;
+            preview.Src = Server.MapPath("~/Images/TestPhoto/" + ss);
+            //imgSave.ImageUrl = Server.MapPath("~\\Images\\TestPhoto\\" + ss);
+
+
+        }
+        catch
+        {
+        }
+    }
+
+
+    protected void BtnSave_Click(object sender, EventArgs e)
+    {
+
+
+        Clear_Error_Success_Box();
+        if (txtMobileNo.Text == "")
+        {
+            Show_Error_Success_Box("E", "Enter Mobile Number");
+            txtMobileNo.Focus();
+            return;
+        }
+        if (txtMobileNo.Text.Length < 10)
+        {
+            Show_Error_Success_Box("E", "Mobile Number length must be between 10 to 12 characters");
+            txtMobileNo.Focus();
+            return;
+        }
+
+        if (txtEmailId.Text == "")
+        {
+            Show_Error_Success_Box("E", "Enter Email Id");
+            txtEmailId.Focus();
+            return;
+        }
+        if (txtParentMobileNo.Text != "")
+        {
+            if (txtParentMobileNo.Text.Length < 10)
+            {
+                Show_Error_Success_Box("E", "Parent Mobile Number length must be between 10 to 12 characters");
+                txtParentMobileNo.Focus();
+                return;
+            }
+        }
+        if (txtInstitute.Text == "")
+        {
+            Show_Error_Success_Box("E", "Enter Institution Name");
+            txtInstitute.Focus();
+            return;
+        }
+
+        if (ddlStandard.SelectedValue == "Select")
+        {
+            Show_Error_Success_Box("E", "Select Current Standard");
+            ddlStandard.Focus();
+            return;
+        }
+
+        if (ddlpayplan.SelectedValue == "Select")
+        {
+            Show_Error_Success_Box("E", "Select Pay Plan");
+            ddlpayplan.Focus();
+            return;
+        }
+
+        if (ddlProductName.SelectedValue == "Select")
+        {
+            Show_Error_Success_Box("E", "Select Product");
+            ddlProductName.Focus();
+            return;
+        }
+
+        int TotalRecord = 0;
+
+        foreach (DataListItem dtlItem in dlselective.Items)
+        {
+            CheckBox ckhselect1 = (CheckBox)dtlItem.FindControl("ckhselect1");
+
+            if (ckhselect1.Checked == true)
+            {
+                TotalRecord = TotalRecord + 1;
+            }
+        }
+        if (TotalRecord == 0)
+        {
+            Show_Error_Success_Box("E", "Select Atleast One Subject Group");
+            return;
+        }
+
+        object obj = null;
+        CheckBox Chk = default(CheckBox);
+        Label lblSelectmaterialcode = default(Label);
+        List<string> list = new List<string>();
+        List<string> List1 = new List<string>();
+        string Sgrcode = "";
+        CheckBox cb = default(CheckBox);
+
+        foreach (DataListItem li in dlselective.Items)
+        {
+            obj = li.FindControl("lblmaterialcodeadd");
+            if (obj != null)
+            {
+                lblSelectmaterialcode = (Label)obj;
+            }
+
+            cb = (CheckBox)li.FindControl("ckhselect1");
+            if (cb != null)
+            {
+                Chk = (CheckBox)cb;
+            }
+
+            if (Chk.Checked == true)
+            {
+                list.Add(lblSelectmaterialcode.Text);
+                Sgrcode = string.Join(",", list.ToArray());
+
+            }
+        }
+
+        if (Sgrcode.Length > 0)
+        {
+            string MaterialCode = "";
+            string Doctype = "";
+            //string Opp_id = "";
+            string Payplan = "";
+
+            string UserID = lblUserId.Text;
+
+            //Opp_id = lbloppid.Text;// Session["Opp_id"].ToString();
+            //MaterialCode = MandateSubjects + "," + OptionalSubjects + "," + Sgrcode;
+            MaterialCode = Sgrcode;
+            Doctype = "DC05";
+            Payplan = ddlpayplan.SelectedValue;
+            string Accountid = "";
+            int flag2 = 2;
+            if (ddlpayplan.SelectedValue == "EMI")
+            {
+                flag2 = 3;
+            }
+            else
+            {
+                flag2 = 2;
+            }
+
+            string Oppurid = "";
+            string Enrollon = "";
+            //string studentid = "";
+            //int flag = 0;
+            Oppurid = lbloppid.Text;
+
+            Enrollon = System.DateTime.Now.ToString("MM-dd-yyyy");
+
+            Label lblfmaterialcode = null;
+            Label lblvouchertype = null;
+            Label lblvoucheramt = null;
+            Label Baseuomdesc = null;
+            Label baseuomid = null;
+
+            foreach (DataListItem li in dlselective.Items)
+            {
+                obj = li.FindControl("lblmaterialcodeadd");
+                if (obj != null)
+                {
+                    lblfmaterialcode = (Label)obj;
+                }
+
+                obj = li.FindControl("lblvoucher_typ");
+                if (obj != null)
+                {
+                    lblvouchertype = (Label)obj;
+                }
+
+                obj = li.FindControl("lblvoucheramt");
+                if (obj != null)
+                {
+                    lblvoucheramt = (Label)obj;
+                }
+
+                obj = li.FindControl("lblbaseuom");
+                if (obj != null)
+                {
+                    Baseuomdesc = (Label)obj;
+                }
+
+                obj = li.FindControl("lblbaseuomid");
+                if (obj != null)
+                {
+                    baseuomid = (Label)obj;
+                }
+
+                cb = (CheckBox)li.FindControl("ckhselect1");
+                if (cb != null)
+                {
+                    Chk = (CheckBox)cb;
+                }
+
+                if (Chk.Checked == true)
+                {
+                    AccountController.InserttoGetPricingprocedurevaluebyoppid(Oppurid, lblfmaterialcode.Text, lblvouchertype.Text, lblvoucheramt.Text, baseuomid.Text, Baseuomdesc.Text, baseuomid.Text, "1", lblvoucheramt.Text, "",
+                    Doctype, 1);
+                }
+            }
+
+            string Student_id = ClsEnrollment.enrollstudent1(Enrollon, UserID, Oppurid, "");
+
+
+            DataSet ds = AccountController.GetPricingprocedureHeaderValue_New(Oppurid, "", "", "", "", "", "", "", "", "",
+            "DC05", 2);
+
+            string ImagePath = "";
+            DataSet ds1 = ProductController.Get_OE_Stud_ImagePath("1");
+            if (ds1.Tables[0].Rows.Count > 0)
+            {
+                ImagePath = ds1.Tables[0].Rows[0]["Image_Path"].ToString();
+            }
+
+
+            bool exists = System.IO.Directory.Exists(Server.MapPath("~/Images/studentphoto"));
+
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath("~/Images/studentphoto"));
+            try
+            {
+                ;
+                if (Student_id != "")
+                {
+                    Student_id = Student_id + ".jpg";
+                    Request.Files[0].SaveAs(Server.MapPath("~/Images/studentphoto/" + Student_id));
+                    string Imagepath1 = ImagePath + "\\" + Student_id;
+                    bool exists1 = System.IO.Directory.Exists(ImagePath);
+
+                    if (!exists1)
+                        System.IO.Directory.CreateDirectory(ImagePath);
+                    Request.Files[0].SaveAs(Imagepath1);
+                    //Request.Files[0].SaveAs(Ser("~/Images/studentphoto/" + Student_id));
+                    preview.Src = Server.MapPath("~/Images/studentphoto/" + Student_id);
+                    Student_id = "images/studentphoto/" + Student_id;
+                }
+                else
+                {
+
+                    string ss = Request.Files[0].FileName;
+
+                    Request.Files[0].SaveAs(Server.MapPath("~/Images/studentphoto/" + ss));
+                    preview.Src = Server.MapPath("~/Images/studentphoto/" + ss);
+
+                    string Imagepath1 = ImagePath + "\\" + ss;
+                    bool exists1 = System.IO.Directory.Exists(ImagePath);
+
+                    if (!exists1)
+                        System.IO.Directory.CreateDirectory(ImagePath);
+                    Request.Files[0].SaveAs(Imagepath1);
+                    Student_id = "images/studentphoto/" + ss;
+                }
+            }
+            catch
+            {
+                Student_id = "";
+            }
+
+            string ResultId = ProductController.SavePhotoPathWithInfo_TabStagging(txtMobileNo.Text.Trim(), txtParentMobileNo.Text.Trim(), txtEmailId.Text.Trim(), ddlStandard.SelectedValue, ddlStandard.SelectedItem.ToString(), ddlProductName.SelectedItem.ToString(), ddlProductName.SelectedValue, txtInstitute.Text.Trim(), lbloppid.Text, Student_id, lblUserId.Text, "1");
+
+            Accountid = AccountController.CreateAccount(Oppurid, MaterialCode, Doctype, Payplan, UserID, flag2);
+            txtMobileNo.Text = "";
+            Clear_AddPanel();
+            divSaveMessage.Visible = true;
+            divAddStudDetail.Visible = false;
+            // Show_Error_Success_Box("E", "Order Saved - Proceed to Manage Account");
+
+        }
+        else
+        {
+            Show_Error_Success_Box("E", "Select Atleast One Subject Group");
+            return;
+        }
+    }
+    protected void BtnClose_Click(object sender, EventArgs e)
+    {
+
+
+        if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+        {
+            Response.Redirect("Default.aspx?UserId=" + Request.QueryString["UserId"] + "&DivName=" + Request.QueryString["DivName"] + "&DivCode=" + Request.QueryString["DivCode"] + "&AcYear=" + Request.QueryString["AcYear"] + "&AcYearCode=" + Request.QueryString["AcYearCode"] + "&Center=" + Request.QueryString["Center"] + "&CenterCode=" + Request.QueryString["CenterCode"] + "");
+        }
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
+
+    }
+
+    protected void btnOk_Click(object sender, EventArgs e)
+    {
+        if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+        {
+            Response.Redirect("Default.aspx?UserId=" + Request.QueryString["UserId"] + "&DivName=" + Request.QueryString["DivName"] + "&DivCode=" + Request.QueryString["DivCode"] + "&AcYear=" + Request.QueryString["AcYear"] + "&AcYearCode=" + Request.QueryString["AcYearCode"] + "&Center=" + Request.QueryString["Center"] + "&CenterCode=" + Request.QueryString["CenterCode"] + "");
+        }
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
+    }
+
+
+    protected void ddlProductName_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        BindOptionalSubject(ddlProductName.SelectedValue, lblCenterCode.Text);
+    }
+
+    protected void lnkSearchInfo_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Clear_Error_Success_Box();
+            Clear_AddPanel();
+            if (txtMobileNo.Text.Trim() == "")
+            {
+                Show_Error_Success_Box("E", "Enter Mobile No");
+                txtMobileNo.Focus();
+                return;
+            }
+            try
+            {
+                long i = Convert.ToInt64(txtMobileNo.Text);
+            }
+            catch
+            {
+                Show_Error_Success_Box("E", "Please Enter Only Numbers");
+                txtMobileNo.Focus();
+                return;
+            }
+            if ((txtMobileNo.Text.Length < 10))
+            {
+                Show_Error_Success_Box("E", "Mobile length must be between 10 to 12 characters");
+                txtMobileNo.Focus();
+                return;
+            }
+
+
+
+            DataSet ds = ProductController.Get_OpportunityByMobileNo(txtMobileNo.Text, lblDivisionCode.Text, lblCenterCode.Text, lblAcdYear.Text, "2");
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+
+                trStudName.Visible = true;
+                trEmailID.Visible = true;
+                trStudParentNo.Visible = true;
+                trSchoolName.Visible = true;
+                trCurStand.Visible = true;
+                trPayPlan.Visible = true;
+                trProduct.Visible = true;
+                trTermsCond.Visible = true;
+                trSubjectGroup.Visible = true;
+                trTakePhoto.Visible = false;
+
+                txtMobileNo.Text = ds.Tables[0].Rows[0]["Handphone1"].ToString();
+                lblStudName.Text = ds.Tables[0].Rows[0]["Con_Title"].ToString() + " " + ds.Tables[0].Rows[0]["Con_FirstName"].ToString() + " " + ds.Tables[0].Rows[0]["Con_midname"].ToString() + " " + ds.Tables[0].Rows[0]["Con_lastname"].ToString();
+                txtEmailId.Text = ds.Tables[0].Rows[0]["Emailid"].ToString();
+                //Emailid
+                txtParentMobileNo.Text = ds.Tables[0].Rows[0]["Handphone2"].ToString();
+                txtInstitute.Text = ds.Tables[0].Rows[0]["Institution_Description"].ToString();
+                lbloppid.Text = ds.Tables[0].Rows[0]["Opportunity_Code"].ToString();
+
+                //imgPic.ImageUrl = "~/Images/no_photo.jpg";
+                //imgPic.DataBind();
+                try
+                {
+                    ddlStandard.SelectedValue = ds.Tables[0].Rows[0]["Current_Standard_Id"].ToString();
+                }
+                catch
+                {
+                }
+
+                try
+                {
+                    ddlProductName.SelectedValue = ds.Tables[0].Rows[0]["Oppor_Product_Id"].ToString();
+                    ddlProductName_SelectedIndexChanged(sender, e);
+                }
+                catch
+                {
+
+                }
+            }
+            //DataSet ds = ProductController.Get_OpportunityByMobileNo(txtMobileNo.Text, "1");
+            //if (ds.Tables[0].Rows.Count > 0)
+            //{
+            //    txtMobileNo.Text = ds.Tables[0].Rows[0]["Handphone1"].ToString();
+            //    lblStudName.Text = ds.Tables[0].Rows[0]["Con_Title"].ToString() + " " + ds.Tables[0].Rows[0]["Con_FirstName"].ToString() + " " + ds.Tables[0].Rows[0]["Con_midname"].ToString() + " " + ds.Tables[0].Rows[0]["Con_lastname"].ToString();
+            //    txtParentMobileNo.Text = ds.Tables[0].Rows[0]["Handphone2"].ToString();
+            //    txtInstitute.Text = ds.Tables[0].Rows[0]["Institution_Description"].ToString();
+            //    //ddlStandard.SelectedValue = ds.Tables[0].Rows[0]["Current_Standard_Id"].ToString();
+            //    //ddlProductName.SelectedValue = ds.Tables[0].Rows[0]["Oppor_Product_Id"].ToString();
+            //}
+
+        }
+        catch (Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+
+    }
+
+
+    protected void chkCheck_CheckedChanged(object sender, EventArgs e)
+    {
+        try
+        {
+            if (chkCheck.Checked == true)
+            {
+                chkCheck.Checked = false;
+                if (txtMobileNo.Text.Trim() == "")
+                {
+                    Show_Error_Success_Box("E", "Enter Mobile No");
+                    txtMobileNo.Focus();
+                    return;
+                }
+                try
+                {
+                    long i = Convert.ToInt64(txtMobileNo.Text);
+                }
+                catch
+                {
+                    Show_Error_Success_Box("E", "Please Enter Only Numbers");
+                    txtMobileNo.Focus();
+                    return;
+                }
+                if ((txtMobileNo.Text.Length < 10))
+                {
+                    Show_Error_Success_Box("E", "Mobile length must be between 10 to 12 characters");
+                    txtMobileNo.Focus();
+                    return;
+                }
+
+                if (txtEmailId.Text.Trim() == "")
+                {
+                    Show_Error_Success_Box("E", "Enter Email ID");
+                    txtEmailId.Focus();
+                    return;
+                }
+
+
+
+                if (txtParentMobileNo.Text.Trim() != "")
+                {
+                    try
+                    {
+                        long i = Convert.ToInt64(txtParentMobileNo.Text);
+                    }
+                    catch
+                    {
+                        Show_Error_Success_Box("E", "Please Enter Only Numbers(Parent Mobile)");
+                        txtParentMobileNo.Focus();
+                        return;
+                    }
+                    if ((txtParentMobileNo.Text.Length < 10))
+                    {
+                        Show_Error_Success_Box("E", "Mobile length must be between 10 to 12 characters(Parent Mobile)");
+                        txtParentMobileNo.Focus();
+                        return;
+                    }
+                }
+
+                if (ddlStandard.SelectedIndex == 0)
+                {
+                    Show_Error_Success_Box("E", "Select Current Standard");
+                    return;
+                }
+
+                if (ddlpayplan.SelectedIndex == 0)
+                {
+                    Show_Error_Success_Box("E", "Select Pay Plan");
+                    return;
+                }
+                if (ddlProductName.SelectedIndex == 0)
+                {
+                    Show_Error_Success_Box("E", "Select Stream/Product");
+                    return;
+                }
+
+
+                int TotalRecord = 0;
+
+                foreach (DataListItem dtlItem in dlselective.Items)
+                {
+                    CheckBox ckhselect1 = (CheckBox)dtlItem.FindControl("ckhselect1");
+
+                    if (ckhselect1.Checked == true)
+                    {
+                        TotalRecord = TotalRecord + 1;
+                    }
+                }
+                if (TotalRecord == 0)
+                {
+                    Show_Error_Success_Box("E", "Select Atleast One Subject Group");
+                    return;
+                }
+
+                chkCheck.Checked = true;
+
+                divAdddNewStud.Visible = false;
+                divApplyTermsCond.Visible = true;
+            }
+            else
+            {
+                BtnSave.Visible = false;
+                trTakePhoto.Visible = false;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+    }
+
+    protected void btnApplyTermsCond_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            divAdddNewStud.Visible = true;
+            divApplyTermsCond.Visible = false;
+            BtnSave.Visible = true;
+            trTakePhoto.Visible = true;
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+    }
+
+    #endregion
+    #region Methods
+
+    private void BindPayplan()
+    {
+        DataSet ds = AccountController.GetAllPayplan();
+        BindDDL(ddlpayplan, ds, "Pay_Plan_Description", "Pay_Plan_Code");
+        ddlpayplan.Items.Insert(0, "Select");
+        ddlpayplan.SelectedIndex = 0;
+    }
+
+
+
+    /// <summary>
+    /// Clear Error Success Box
+    /// </summary>
+    private void Clear_Error_Success_Box()
+    {
+        Msg_Error.Visible = false;
+        Msg_Success.Visible = false;
+        lblSuccess.Text = "";
+        lblerror.Text = "";
+        UpdatePanelMsgBox.Update();
+    }
+
+    /// <summary>
+    /// Show Error or success box on top base on boxtype and Error code
+    /// </summary>
+    /// <param name="BoxType">BoxType</param>
+    /// <param name="Error_Code">Error_Code</param>
+    private void Show_Error_Success_Box(string BoxType, string Error_Code)
+    {
+        if (BoxType == "E")
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ProductController.Raise_Error(Error_Code);
+            UpdatePanelMsgBox.Update();
+        }
+        else
+        {
+            Msg_Success.Visible = true;
+            Msg_Error.Visible = false;
+            lblSuccess.Text = ProductController.Raise_Error(Error_Code);
+            UpdatePanelMsgBox.Update();
+        }
+    }
+
+    /// <summary>
+    /// Fill drop down list and assign value and Text
+    /// </summary>
+    /// <param name="ddl"></param>
+    /// <param name="ds"></param>
+    /// <param name="txtField"></param>
+    /// <param name="valField"></param>
+    private void BindDDL(DropDownList ddl, DataSet ds, string txtField, string valField)
+    {
+        ddl.DataSource = ds;
+        ddl.DataTextField = txtField;
+        ddl.DataValueField = valField;
+        ddl.DataBind();
+    }
+
+
+    private void Clear_AddPanel()
+    {
+        lblStudName.Text = "";
+        txtEmailId.Text = "";
+        txtParentMobileNo.Text = "";
+        txtInstitute.Text = "";
+        ddlStandard.SelectedIndex = 0;
+        ddlProductName.SelectedIndex = 0;
+    }
+
+    /// <summary>
+    /// Fill Config Infot 
+    /// </summary>
+    private void FillConfigInfo()
+    {
+
+        try
+        {
+
+            if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+            {
+                lblUserId.Text = Request.QueryString["UserId"];
+                lblDivision_Result.Text = Request.QueryString["DivName"];
+                lblDivisionCode.Text = Request.QueryString["DivCode"];
+                lblAcadYear_Result.Text = Request.QueryString["AcYear"];
+                lblAcdYear.Text = Request.QueryString["AcYearCode"];
+                lblCenter_Result.Text = Request.QueryString["Center"];
+                lblCenterCode.Text = Request.QueryString["CenterCode"];
+            }
+            else
+            {
+                Response.Redirect("Configuration.aspx");
+            }
+
+            //string Div_Code = null;
+            //Div_Code = lblDivisionCode.Text;
+
+            //DataSet dsAllStandard = ProductController.GetAllActive_AllStandard(Div_Code);
+            //BindDDL(ddlStandard, dsAllStandard, "Standard_Name", "Standard_Code");
+            //ddlStandard.Items.Insert(0, "Select");
+            //ddlStandard.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+
+    }
+
+    /// <summary>
+    /// Fill Course dropdownlist 
+    /// </summary>
+    private void FillDDL_Standard()
+    {
+
+        try
+        {
+
+            string Institute_Type_Id = null;
+            Institute_Type_Id = "01";
+
+            DataSet dsAllStandard = ProductController.GetallCurrentStudyingin(Institute_Type_Id);
+            BindDDL(ddlStandard, dsAllStandard, "description", "id");
+            ddlStandard.Items.Insert(0, "Select");
+            ddlStandard.SelectedIndex = 0;
+
+
+            //string Div_Code = null;
+            //Div_Code = lblDivisionCode.Text;
+
+            //DataSet dsAllStandard = ProductController.GetAllActive_AllStandard(Div_Code);
+            //BindDDL(ddlStandard, dsAllStandard, "Standard_Name", "Standard_Code");
+            //ddlStandard.Items.Insert(0, "Select");
+            //ddlStandard.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+
+    }
+
+    private void FillDDL_Product()
+    {
+        try
+        {
+            ddlProductName.Items.Clear();
+
+
+            DataSet dsProduct = ProductController.GetStreamby_Center_AcademicYear(lblCenterCode.Text, lblAcadYear_Result.Text);
+            BindDDL(ddlProductName, dsProduct, "Stream_SDesc", "Stream_Code");
+            ddlProductName.Items.Insert(0, "Select");
+            ddlProductName.SelectedIndex = 0;
+
+            //string Div_Code = null;
+            //Div_Code = lblDivisionCode.Text;
+
+            //string YearName = null;
+            //YearName = lblAcdYear.Text;
+
+            //string CourseCode = null;
+            //CourseCode = ddlStandard.SelectedValue;
+
+            //DataSet dsLMS = ProductController.Get_LMSProduct_ByDivision_Year_Course(Div_Code, YearName, CourseCode);
+            //BindDDL(ddlProductName, dsLMS, "ProductName", "ProductCode");
+            //ddlProductName.Items.Insert(0, "Select");
+            //ddlProductName.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+    }
+
+
+    private void BindOptionalSubject(string StreamName, string Center)
+    {
+        DataSet ds = ProductController.GetSubjectsbyStreamCode(5, StreamName, Center);
+        if (ds.Tables[0] != null)
+        {
+            dlselective.DataSource = ds;
+            dlselective.DataBind();
+        }
+
+    }
+
+    #endregion
+     protected void Button1_Click(object sender, EventArgs e)
+    {
+        bool exists = System.IO.Directory.Exists(Server.MapPath("~/Images/studentphoto"));
+
+        if (!exists)
+            System.IO.Directory.CreateDirectory(Server.MapPath("~/Images/studentphoto"));
+        try
+        {
+           
+
+                string ss = Request.Files[0].FileName;
+
+                Request.Files[0].SaveAs(Server.MapPath("~/Images/studentphoto/" + ss));
+                preview.Src = Server.MapPath("~/Images/studentphoto/" + ss);
+
+                //string Imagepath1 = ImagePath + "\\" + ss;
+                //bool exists1 = System.IO.Directory.Exists(ImagePath);
+
+                //if (!exists1)
+                //    System.IO.Directory.CreateDirectory(ImagePath);
+                //Request.Files[0].SaveAs(Imagepath1);
+                //Student_id = "images/studentphoto/" + ss;
+                preview.Src = Server.MapPath("~/Images/studentphoto/" + ss);
+            
+        }
+        catch
+        {
+            
+        }
+    }
+}

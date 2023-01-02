@@ -1,0 +1,302 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.IO;
+using System.Data;
+using System.Net;
+using ShoppingCart.BL;
+using Microsoft.VisualBasic;
+
+
+public partial class StudentPhoto : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack)
+            {
+                FillConfigInfo();
+            }           
+        }
+        catch (Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+    }
+
+    #region Methods
+    /// <summary>
+    /// Clear Error Success Box
+    /// </summary>
+    private void Clear_Error_Success_Box()
+    {
+        Msg_Error.Visible = false;
+        Msg_Success.Visible = false;
+        lblSuccess.Text = "";
+        lblerror.Text = "";
+        UpdatePanelMsgBox.Update();
+    }
+
+    /// <summary>
+    /// Show Error or success box on top base on boxtype and Error code
+    /// </summary>
+    /// <param name="BoxType">BoxType</param>
+    /// <param name="Error_Code">Error_Code</param>
+    private void Show_Error_Success_Box(string BoxType, string Error_Code)
+    {
+        if (BoxType == "E")
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ProductController.Raise_Error(Error_Code);
+            UpdatePanelMsgBox.Update();
+        }
+        else
+        {
+            Msg_Success.Visible = true;
+            Msg_Error.Visible = false;
+            lblSuccess.Text = ProductController.Raise_Error(Error_Code);
+            UpdatePanelMsgBox.Update();
+        }
+    }
+
+
+    /// <summary>
+    /// Fill Config Infot 
+    /// </summary>
+    private void FillConfigInfo()
+    {
+
+        try
+        {
+
+            if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+            {
+                lblUserId.Text = Request.QueryString["UserId"];
+                lblDivision_Result.Text = Request.QueryString["DivName"];
+                lblDivisionCode.Text = Request.QueryString["DivCode"];
+                lblAcadYear_Result.Text = Request.QueryString["AcYear"];
+                lblAcdYear.Text = Request.QueryString["AcYearCode"];
+                lblCenter_Result.Text = Request.QueryString["Center"];
+                lblCenterCode.Text = Request.QueryString["CenterCode"];
+            }
+            else
+            {
+                Response.Redirect("Configuration.aspx");
+            }
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+
+    }
+
+    private void BindStudentSubjectGroup(string CurSbCode)
+    {
+        DataSet ds = AccountController.GetStudentSubjectgroupbyCursbcode(2, CurSbCode);
+        dlSelectedGroup.DataSource = ds;
+        dlSelectedGroup.DataBind();
+        //lbsubjectgroup.DataSource = ds;
+        //lbsubjectgroup.DataTextField = "SGR_DESC";
+        //lbsubjectgroup.DataValueField = "sgr_material";
+        //lbsubjectgroup.DataBind();
+    }
+    #endregion
+    #region Events
+    protected void BtnSearch_Click(object sender, EventArgs e)
+    {
+        Clear_Error_Success_Box();
+        if (txtMobileNo.Text.Trim() == "")
+        {
+            Show_Error_Success_Box("E", "Enter Mobile No");
+            txtMobileNo.Focus();
+            return;
+        }
+
+        try
+        {
+            long i = Convert.ToInt64(txtMobileNo.Text);
+        }
+        catch
+        {
+            Show_Error_Success_Box("E", "Please Enter Only Numbers");
+            txtMobileNo.Focus();
+            return;
+        }
+
+        if ((txtMobileNo.Text.Length < 10))
+        {
+            Show_Error_Success_Box("E", "Mobile length must be between 10 to 12 characters");
+            txtMobileNo.Focus();
+            return;
+        }
+
+        try
+        {
+            DataSet ds = ProductController.Get_StudentByMobileNoAndName(txtMobileNo.Text.Trim(), txtStudName.Text.Trim(), lblDivisionCode.Text, lblCenterCode.Text, lblAcdYear.Text, "1");
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                divDisplayStudDetail.Visible = true;
+                divAdddNewStud.Visible = false;
+                lblContactid.Text = ds.Tables[0].Rows[0]["CON_ID"].ToString();
+                lblMobileNo.Text = ds.Tables[0].Rows[0]["Handphone1"].ToString();
+                lblStudentName.Text = ds.Tables[0].Rows[0]["Stud_Name"].ToString();
+                lblEmailId.Text = ds.Tables[0].Rows[0]["Emailid"].ToString();
+                lblParentMobileNo.Text = ds.Tables[0].Rows[0]["Handphone2"].ToString();
+                lblSchoolCollegeName.Text = ds.Tables[0].Rows[0]["Institution_Description"].ToString();
+                lblCurrentStandard.Text = ds.Tables[0].Rows[0]["CurrentStandard"].ToString();
+                lblSelectedProduct.Text = ds.Tables[0].Rows[0]["ProductName"].ToString();
+                BindStudentSubjectGroup(ds.Tables[0].Rows[0]["sbentrycode"].ToString());
+                lblStudCode.Text = ds.Tables[0].Rows[0]["sbentrycode"].ToString();
+                lblOrderEngineImagePath.Text = ds.Tables[1].Rows[0]["Image_Path"].ToString();//D:\\\\Order_Engine_Staging\\\\Images\\\\studentphoto
+
+                if (ds.Tables[0].Rows[0]["ImagePath"].ToString() != "")
+                {
+                    string ImagePath = ds.Tables[0].Rows[0]["ImagePath"].ToString();
+                    lblImagePath.Text = ImagePath;
+                    string ImageName = ImagePath.Substring(20, ImagePath.Length - 20);
+
+                    string serverPath = Server.MapPath("Images\\studentphoto") + "\\" + ImageName;
+
+                    if (File.Exists(serverPath))
+                    {
+                        imgstudentphoto.ImageUrl = ImagePath;
+                    }
+                    else
+                    {
+                        string sourcePath = ds.Tables[1].Rows[0]["Image_Path"].ToString();
+                        string destinationPath = Server.MapPath("Images\\studentphoto") + "\\";
+                        if (System.IO.Directory.Exists(sourcePath))
+                        {
+                            string[] files = System.IO.Directory.GetFiles(sourcePath);
+                            foreach (string s in files)
+                            {
+                                string fileName = Path.GetFileName(s);
+                                if (fileName == ImageName)
+                                {
+                                    string destFile = Path.Combine(destinationPath, fileName);
+                                    File.Copy(s, destFile, true);
+                                    imgstudentphoto.ImageUrl = ImagePath;   
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                        
+                   // imgstudentphoto.ImageUrl = @"D:\\Order_Engine_Staging\\Images\\studentphoto\\OA0072015000361.jpg";
+
+                }
+                else
+                {
+                    lblImagePath.Text = "";
+                    imgstudentphoto.ImageUrl = "~/Images/no_photo.jpg";
+                }
+            }
+            else
+            {
+                Show_Error_Success_Box("E", "Student Not Found for this Mobile Number and Name....!");
+            }
+        }
+        catch(Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+    }
+
+    protected void btnSave_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Clear_Error_Success_Box();
+            bool exists = System.IO.Directory.Exists(Server.MapPath("~/Images/studentphoto"));
+
+            if (!exists)
+                System.IO.Directory.CreateDirectory(Server.MapPath("~/Images/studentphoto"));
+            try
+            {
+              
+                    //string ss = Request.Files[0].FileName;
+                    if (Page.Request.Files[0].FileName != "")
+                    {
+                        string Student_id = lblStudCode.Text + ".jpg";
+                        Request.Files[0].SaveAs(Server.MapPath("~/Images/studentphoto/" + Student_id));
+                        string Imagepath1 = lblOrderEngineImagePath.Text + "\\" + Student_id;
+                        bool exists1 = System.IO.Directory.Exists(lblOrderEngineImagePath.Text);
+
+                        if (!exists1)
+                            System.IO.Directory.CreateDirectory(lblOrderEngineImagePath.Text);
+                        Request.Files[0].SaveAs(Imagepath1);
+
+                        Student_id = "images/studentphoto/" + Student_id;
+                        string ResultId = ProductController.SavePhotoPath_TabStagging(lblContactid.Text, Student_id, lblUserId.Text, "1");
+                        divSaveMessage.Visible = true;
+                        divDisplayStudDetail.Visible = false;
+                        divAdddNewStud.Visible = false;
+                    }
+                    else
+                    {
+                        Show_Error_Success_Box("E", "Please Take Photo....!");
+                        return;
+                    }               
+            }
+            catch(Exception ex)
+            {
+                Show_Error_Success_Box("E", ex.ToString());
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+    }
+    protected void btnOk_Click(object sender, EventArgs e)
+    {
+        if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+        {
+            Response.Redirect("Default.aspx?UserId=" + Request.QueryString["UserId"] + "&DivName=" + Request.QueryString["DivName"] + "&DivCode=" + Request.QueryString["DivCode"] + "&AcYear=" + Request.QueryString["AcYear"] + "&AcYearCode=" + Request.QueryString["AcYearCode"] + "&Center=" + Request.QueryString["Center"] + "&CenterCode=" + Request.QueryString["CenterCode"] + "");
+        }
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
+    }
+    #endregion
+
+
+    protected void btnCloseStud_Click(object sender, EventArgs e)
+    {
+        if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+        {
+            Response.Redirect("Default.aspx?UserId=" + Request.QueryString["UserId"] + "&DivName=" + Request.QueryString["DivName"] + "&DivCode=" + Request.QueryString["DivCode"] + "&AcYear=" + Request.QueryString["AcYear"] + "&AcYearCode=" + Request.QueryString["AcYearCode"] + "&Center=" + Request.QueryString["Center"] + "&CenterCode=" + Request.QueryString["CenterCode"] + "");
+        }
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
+    }
+    protected void BtnClose_Click(object sender, EventArgs e)
+    {
+        if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+        {
+            Response.Redirect("Default.aspx?UserId=" + Request.QueryString["UserId"] + "&DivName=" + Request.QueryString["DivName"] + "&DivCode=" + Request.QueryString["DivCode"] + "&AcYear=" + Request.QueryString["AcYear"] + "&AcYearCode=" + Request.QueryString["AcYearCode"] + "&Center=" + Request.QueryString["Center"] + "&CenterCode=" + Request.QueryString["CenterCode"] + "");
+        }
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
+    }
+    
+}

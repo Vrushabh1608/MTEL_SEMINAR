@@ -1,0 +1,278 @@
+﻿using Microsoft.VisualBasic;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Diagnostics;
+using ShoppingCart.BL;
+using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
+using System.Security.Principal;
+
+
+public partial class Configuration : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        try
+        {
+            if (!IsPostBack)
+            {
+               
+                
+             //   FillDDL_Division();
+                FillDDL_AcadYear();
+                FillConfigInfo();
+                //txtTabId.Text= WindowsIdentity.GetCurrent().Owner.ToString();
+
+            }
+        }
+        catch (Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+    }
+
+   
+    #region Methods
+
+    /// <summary>
+    /// Clear Error Success Box
+    /// </summary>
+    private void Clear_Error_Success_Box()
+    {
+        Msg_Error.Visible = false;
+        Msg_Success.Visible = false;
+        lblSuccess.Text = "";
+        lblerror.Text = "";
+        UpdatePanelMsgBox.Update();
+    }
+
+    /// <summary>
+    /// Show Error or success box on top base on boxtype and Error code
+    /// </summary>
+    /// <param name="BoxType">BoxType</param>
+    /// <param name="Error_Code">Error_Code</param>
+    private void Show_Error_Success_Box(string BoxType, string Error_Code)
+    {
+        if (BoxType == "E")
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ProductController.Raise_Error(Error_Code);
+            UpdatePanelMsgBox.Update();
+        }
+        else
+        {
+            Msg_Success.Visible = true;
+            Msg_Error.Visible = false;
+            lblSuccess.Text = ProductController.Raise_Error(Error_Code);
+            UpdatePanelMsgBox.Update();
+        }
+    }
+    /// <summary>
+    /// Fill drop down list and assign value and Text
+    /// </summary>
+    /// <param name="ddl"></param>
+    /// <param name="ds"></param>
+    /// <param name="txtField"></param>
+    /// <param name="valField"></param>
+    private void BindDDL(DropDownList ddl, DataSet ds, string txtField, string valField)
+    {
+        ddl.DataSource = ds;
+        ddl.DataTextField = txtField;
+        ddl.DataValueField = valField;
+        ddl.DataBind();
+    }
+
+    /// <summary>
+    /// Fill Config Infot 
+    /// </summary>
+    private void FillConfigInfo()
+    {
+
+        try
+        {
+
+            if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+            {
+                txtUserId.Text = Request.QueryString["UserId"];
+                FillDDL_Division();
+                ddldivision.SelectedValue = Request.QueryString["DivCode"].ToString();
+                FillDDL_Centre();
+                ddlAcdYear.SelectedValue = Request.QueryString["AcYearCode"].ToString();                
+                ddlCenter.SelectedValue = Request.QueryString["CenterCode"].ToString();
+            }
+            if (Request.QueryString["Page"] != null)
+            {
+                lblPage.Text = Request.QueryString["Page"].ToString();
+            }
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+
+    }
+
+
+    /// <summary>
+    /// Fill Division drop down list
+    /// </summary>
+    /// 
+    protected void txtUserId_TextChanged(object sender, EventArgs e)
+    {       
+        FillDDL_Division();
+    }
+    private void FillDDL_Division()
+    {
+
+        try
+        {
+            Clear_Error_Success_Box();
+            string UserID = txtUserId.Text.Trim();
+            DataSet dsDivision = ProductController.GetAllDivision_TabStagging(UserID);
+            BindDDL(ddldivision, dsDivision, "Source_Division_ShortDesc", "Source_Division_Code");
+            ddldivision.Items.Insert(0, "Select");
+            ddldivision.SelectedIndex = 0;
+                        
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+    }
+
+    /// <summary>
+    /// Fill Academic Year dropdown
+    /// </summary>
+    private void FillDDL_AcadYear()
+    {
+        try
+        {
+            Clear_Error_Success_Box();
+            DataSet dsAcadYear = ProductController.GetAllActiveUser_AcadYear();
+            BindDDL(ddlAcdYear, dsAcadYear, "Description", "Id");
+            ddlAcdYear.Items.Insert(0, "Select");
+            ddlAcdYear.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+    }
+
+    /// Fill Centers Based on Division 
+    /// </summary>
+    private void FillDDL_Centre()
+    {
+        try
+        {
+            Clear_Error_Success_Box();
+            string Div_Code = null;
+            Div_Code = ddldivision.SelectedValue;            
+            DataSet dsCentre = ProductController.GetAllCenter_By_Division( Div_Code, "1");
+            BindDDL(ddlCenter, dsCentre, "Center_Name", "Center_Code");
+            ddlCenter.Items.Insert(0, "Select");
+            ddlCenter.SelectedIndex = 0;
+        }
+        catch (Exception ex)
+        {
+            Msg_Error.Visible = true;
+            Msg_Success.Visible = false;
+            lblerror.Text = ex.ToString();
+            UpdatePanelMsgBox.Update();
+            return;
+        }
+    }
+
+
+    #endregion
+
+    #region Event's
+    protected void BtnClose_Click(object sender, EventArgs e)
+    {       
+        if ((Request.QueryString["UserId"] != null) && (Request.QueryString["DivName"] != null) && (Request.QueryString["DivCode"] != null) && (Request.QueryString["AcYear"] != null) && (Request.QueryString["AcYearCode"] != null) && (Request.QueryString["Center"] != null) && (Request.QueryString["CenterCode"] != null))
+        {
+            Response.Redirect("Default.aspx?UserId=" + Request.QueryString["UserId"] + "&DivName=" + Request.QueryString["DivName"] + "&DivCode=" + Request.QueryString["DivCode"] + "&AcYear=" + Request.QueryString["AcYear"] + "&AcYearCode=" + Request.QueryString["AcYearCode"] + "&Center=" + Request.QueryString["Center"] + "&CenterCode=" + Request.QueryString["CenterCode"] + "");
+        }
+        else
+        {
+            Response.Redirect("Default.aspx");
+        }
+    }
+
+    protected void ddldivision_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        FillDDL_Centre();
+    }
+    #endregion
+
+    protected void BtnSave_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Clear_Error_Success_Box();
+            if (txtUserId.Text.Trim() == "")
+            {
+                Show_Error_Success_Box("E", "Enter User Id");
+                txtUserId.Focus();
+                return;
+            }
+            if (ddldivision.SelectedIndex == 0)
+            {
+                Show_Error_Success_Box("E", "Select Division");
+                ddldivision.Focus();
+                return;
+            }
+            if (ddlAcdYear.SelectedIndex == 0)
+            {
+                Show_Error_Success_Box("E", "Select Academic Year");
+                ddlAcdYear.Focus();
+                return;
+            }
+            if (ddlCenter.SelectedIndex == 0)
+            {
+                Show_Error_Success_Box("E", "Select Center");
+                ddlCenter.Focus();
+                return;
+            }
+           // string ConInfo = "" + txtUserId.Text + "%" + ddldivision.SelectedValue + "%" + ddlAcdYear.SelectedValue + "%" + ddlCenter.SelectedValue + "";
+
+            if (lblPage.Text == "Admission")
+            {                
+                Response.Redirect("Admission.aspx?UserId=" + txtUserId.Text + "&DivName=" + ddldivision.SelectedItem.ToString() + "&DivCode=" + ddldivision.SelectedValue + "&AcYear=" + ddlAcdYear.SelectedItem.ToString() + "&AcYearCode=" + ddlAcdYear.SelectedValue + "&Center=" + ddlCenter.SelectedItem.ToString() + "&CenterCode=" + ddlCenter.SelectedValue + "");
+            }
+            else if (lblPage.Text == "StudentPhoto")
+            {
+                Response.Redirect("StudentPhoto.aspx?UserId=" + txtUserId.Text + "&DivName=" + ddldivision.SelectedItem.ToString() + "&DivCode=" + ddldivision.SelectedValue + "&AcYear=" + ddlAcdYear.SelectedItem.ToString() + "&AcYearCode=" + ddlAcdYear.SelectedValue + "&Center=" + ddlCenter.SelectedItem.ToString() + "&CenterCode=" + ddlCenter.SelectedValue + "");
+            }
+                
+            else
+                Response.Redirect("StudentDetails.aspx?UserId=" + txtUserId.Text + "&DivName=" + ddldivision.SelectedItem.ToString() + "&DivCode=" + ddldivision.SelectedValue + "&AcYear=" + ddlAcdYear.SelectedItem.ToString() + "&AcYearCode=" + ddlAcdYear.SelectedValue + "&Center=" + ddlCenter.SelectedItem.ToString() + "&CenterCode=" + ddlCenter.SelectedValue + "");
+            
+            
+            
+
+        }
+        catch (Exception ex)
+        {
+            Show_Error_Success_Box("E", ex.ToString());
+            return;
+        }
+    }
+}
