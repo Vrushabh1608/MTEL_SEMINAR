@@ -266,9 +266,18 @@ public partial class Attendance_QR_Code : System.Web.UI.Page
     {
         if (MobNo.Length == 10)
         {
+        
             //MobNo = MobNo; need to chk by jayant
             WebClient client = new WebClient();
-            string baseurl = "http://api.smscountry.com/SMSCwebservice_bulk.aspx?User=Sciencetr&passwd=mtel@4321&mobilenumber=" + MobNo + "&message=" + Msg + "&sid=MTEDU&mtype=N&DR=Y";
+            //string baseurl = "http://api.smscountry.com/SMSCwebservice_bulk.aspx?User=Sciencetr&passwd=mtel@4321&mobilenumber=" + MobNo + "&message=" + Msg + "&sid=MTEDU&mtype=N&DR=Y";
+            // Changes by Shailesh Thakur on 28-09-2023 Remove hardcode sms Connection.
+            string smsProvider = System.Configuration.ConfigurationSettings.AppSettings["smsProvider"];
+            string smsUser = System.Configuration.ConfigurationSettings.AppSettings["smsUser"];
+            string smspasswd = System.Configuration.ConfigurationSettings.AppSettings["smspasswd"];
+            string smssid = System.Configuration.ConfigurationSettings.AppSettings["smssid"];
+
+            string baseurl = smsProvider + "?User=" + smsUser + "&passwd=" + smspasswd + "&mobilenumber=" + MobNo + "&message=" + Msg + "&sid=" + smssid + "&mtype=N&DR=Y";
+           
             Stream data = client.OpenRead(baseurl);
             StreamReader reader = new StreamReader(data);
             string s = reader.ReadToEnd();
